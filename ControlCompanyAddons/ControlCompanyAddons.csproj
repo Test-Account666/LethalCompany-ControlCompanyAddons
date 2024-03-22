@@ -5,6 +5,7 @@
         <AssemblyName>TestAccount666.ControlCompanyAddons</AssemblyName>
         <Product>ControlCompanyAddons</Product>
         <Description>Additions that ControlCompany won't add, or hasn't added, yet</Description>
+        <Source>https://github.com/TheBlackEntity/LethalCompany-ControlCompanyAddons</Source>
         <!-- Change to whatever version you're currently on. -->
         <Version>1.0.2</Version>
     </PropertyGroup>
