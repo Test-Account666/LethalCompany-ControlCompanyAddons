@@ -1,8 +1,8 @@
 # ControlCompany Additions Mod
 
 ## 1.1.0:
-\+ Added more controls for Eyeless Dog
-\# Some structural changes
+\+ Added more controls for Eyeless Dog<br>
+\# Some structural changes<br>
 
 ## 1.0.2:
 \+ Added License<br>
