@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ControlCompanyAddons;
+namespace ControlCompanyAddons.Additions;
 
 public static class HoardingBugAdditions {
     private static readonly List<HoarderBugItem> _FakeStolenItems = [];

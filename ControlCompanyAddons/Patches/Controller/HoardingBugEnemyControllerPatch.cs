@@ -1,11 +1,12 @@
 using System.Reflection;
+using ControlCompanyAddons.Additions;
 using ControlCompanyAddons.Helpers;
 using HarmonyLib;
 
 namespace ControlCompanyAddons.Patches.Controller;
 
 [HarmonyPatch]
-public class GetPrimarySkillPatch {
+public class HoardingBugGetPrimarySkillNamePatch {
     public static MethodBase TargetMethod() {
         var enemyControllerType = HoardingBugEnemyControllerHelper.GetHoardingBugEnemyControllerType();
 
@@ -35,7 +36,7 @@ public class GetPrimarySkillPatch {
 }
 
 [HarmonyPatch]
-public class UsePrimarySkillActionPatch {
+public class HoardingBugUsePrimarySkillActionPatch {
     public static MethodBase TargetMethod() {
         var enemyControllerType = HoardingBugEnemyControllerHelper.GetHoardingBugEnemyControllerType();
 

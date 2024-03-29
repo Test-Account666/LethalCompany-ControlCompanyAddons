@@ -22,7 +22,6 @@ public static class ControlCompanyHelper {
         return false;
     }
 
-    public static Assembly? GetControlCompanyAssembly() {
-        return !FetchControlCompanyAssembly() ? null : _controlCompanyAssembly;
-    }
+    public static Assembly? GetControlCompanyAssembly() =>
+        !FetchControlCompanyAssembly() ? null : _controlCompanyAssembly;
 }
