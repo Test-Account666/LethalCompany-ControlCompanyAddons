@@ -8,6 +8,7 @@ namespace ControlCompanyAddons.Patches.Controller;
 // Primary Skill
 [HarmonyPatch]
 public class MouthDogGetPrimarySkillNamePatch {
+    // ReSharper disable InconsistentNaming
     public static MethodBase TargetMethod() {
         var enemyControllerType = EnemyControllerHelper.GetEnemyControllerType();
 
@@ -29,9 +30,9 @@ public class MouthDogGetPrimarySkillNamePatch {
         if (!dataHelper.HasData("WasAngered"))
             dataHelper.SetData("WasAngered", false);
 
-        var wasAngered = (bool)dataHelper.GetData("WasAngered");
+        var wasAngered = (bool) dataHelper.GetData("WasAngered");
 
-        __result = wasAngered ? "Calm Down" : "Investigate";
+        __result = wasAngered? "Calm Down" : "Investigate";
         return false;
     }
 }
@@ -65,7 +66,7 @@ public class MouthDogUsePrimarySkillActionPatch {
         if (!dataHelper.HasData("WasAngered"))
             dataHelper.SetData("WasAngered", false);
 
-        var wasAngered = (bool)dataHelper.GetData("WasAngered");
+        var wasAngered = (bool) dataHelper.GetData("WasAngered");
 
         const bool hasScreamed = false;
 
@@ -83,6 +84,7 @@ public class MouthDogUsePrimarySkillActionPatch {
 
 [HarmonyPatch]
 public class MouthDogGetSecondarySkillNamePatch {
+    // ReSharper disable InconsistentNaming
     public static MethodBase TargetMethod() {
         var enemyControllerType = MouthDogEnemyControllerHelper.GetMouthDogEnemyControllerType();
 
@@ -95,8 +97,7 @@ public class MouthDogGetSecondarySkillNamePatch {
         if (mouthDogAI is null)
             return true;
 
-        var dataHelper = mouthDogAI.GetComponent<DataHelper>() ??
-                         mouthDogAI.gameObject.AddComponent<DataHelper>();
+        var dataHelper = mouthDogAI.GetComponent<DataHelper>() ?? mouthDogAI.gameObject.AddComponent<DataHelper>();
 
         if (!dataHelper.HasData("HasScreamed"))
             dataHelper.SetData("HasScreamed", false);
@@ -104,11 +105,11 @@ public class MouthDogGetSecondarySkillNamePatch {
         if (!dataHelper.HasData("WasAngered"))
             dataHelper.SetData("WasAngered", false);
 
-        var hasScreamed = (bool)dataHelper.GetData("HasScreamed");
+        var hasScreamed = (bool) dataHelper.GetData("HasScreamed");
 
-        var wasAngered = (bool)dataHelper.GetData("WasAngered");
+        var wasAngered = (bool) dataHelper.GetData("WasAngered");
 
-        __result = hasScreamed ? "Lunge" : "Scream";
+        __result = hasScreamed? "Lunge" : "Scream";
         return false;
     }
 }
@@ -130,8 +131,7 @@ public class MouthDogUseSecondarySkillActionPatch {
         if (mouthDogAI is null)
             return true;
 
-        var dataHelper = mouthDogAI.GetComponent<DataHelper>() ??
-                         mouthDogAI.gameObject.AddComponent<DataHelper>();
+        var dataHelper = mouthDogAI.GetComponent<DataHelper>() ?? mouthDogAI.gameObject.AddComponent<DataHelper>();
 
         if (!dataHelper.HasData("HasScreamed"))
             dataHelper.SetData("HasScreamed", false);
@@ -139,9 +139,9 @@ public class MouthDogUseSecondarySkillActionPatch {
         if (!dataHelper.HasData("WasAngered"))
             dataHelper.SetData("WasAngered", false);
 
-        var hasScreamed = (bool)dataHelper.GetData("HasScreamed");
+        var hasScreamed = (bool) dataHelper.GetData("HasScreamed");
 
-        var wasAngered = (bool)dataHelper.GetData("WasAngered");
+        var wasAngered = (bool) dataHelper.GetData("WasAngered");
 
         hasScreamed = !hasScreamed;
 

@@ -4,7 +4,8 @@ using UnityEngine;
 namespace ControlCompanyAddons.Helpers;
 
 public class DataHelper : MonoBehaviour {
-    private readonly Dictionary<string, object> _dataDictionary = [];
+    private readonly Dictionary<string, object> _dataDictionary = [
+    ];
 
     public bool HasData(string key) =>
         _dataDictionary.ContainsKey(key);

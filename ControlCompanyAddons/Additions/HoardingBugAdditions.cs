@@ -1,14 +1,16 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace ControlCompanyAddons.Additions;
 
 public static class HoardingBugAdditions {
-    private static readonly List<HoarderBugItem> _FakeStolenItems = [];
+    private static readonly List<HoarderBugItem> _FakeStolenItems = [
+    ];
 
     public static void HandleAttackLogic(bool isAttacking) {
         if (!isAttacking) {
-            foreach (var fakeStolenItem in (HoarderBugItem[]) [.._FakeStolenItems]) {
+            foreach (var fakeStolenItem in (HoarderBugItem[]) [
+                         .._FakeStolenItems,
+                     ]) {
                 _FakeStolenItems.Remove(fakeStolenItem);
                 HoarderBugAI.HoarderBugItems.Remove(fakeStolenItem);
             }
@@ -27,8 +29,7 @@ public static class HoardingBugAdditions {
                 if (itemSlot is null)
                     continue;
 
-                var fakeStolenItem = new HoarderBugItem(itemSlot, HoarderBugItemStatus.Stolen,
-                    new Vector3(2000, 2000, 2000));
+                var fakeStolenItem = new HoarderBugItem(itemSlot, HoarderBugItemStatus.Stolen, new(2000, 2000, 2000));
 
                 _FakeStolenItems.Add(fakeStolenItem);
 

@@ -21,7 +21,7 @@ public class ControlCompanyAddons : BaseUnityPlugin {
     }
 
     internal static void Patch() {
-        Harmony ??= new Harmony(MyPluginInfo.PLUGIN_GUID);
+        Harmony ??= new(MyPluginInfo.PLUGIN_GUID);
 
         Logger.LogDebug("Patching...");
 

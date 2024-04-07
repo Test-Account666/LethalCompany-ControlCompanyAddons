@@ -7,6 +7,7 @@ namespace ControlCompanyAddons.Patches.Controller;
 
 [HarmonyPatch]
 public class HoardingBugGetPrimarySkillNamePatch {
+    // ReSharper disable InconsistentNaming
     public static MethodBase TargetMethod() {
         var enemyControllerType = HoardingBugEnemyControllerHelper.GetHoardingBugEnemyControllerType();
 
@@ -22,21 +23,21 @@ public class HoardingBugGetPrimarySkillNamePatch {
         if (hoardingBugAI.heldItem is not null)
             return true;
 
-        var dataHelper = hoardingBugAI.GetComponent<DataHelper>() ??
-                         hoardingBugAI.gameObject.AddComponent<DataHelper>();
+        var dataHelper = hoardingBugAI.GetComponent<DataHelper>() ?? hoardingBugAI.gameObject.AddComponent<DataHelper>();
 
         if (!dataHelper.HasData("IsAttacking"))
             dataHelper.SetData("IsAttacking", false);
 
-        var isAttacking = (bool)dataHelper.GetData("IsAttacking");
+        var isAttacking = (bool) dataHelper.GetData("IsAttacking");
 
-        __result = isAttacking ? "Stop Attacking" : "Start Attacking";
+        __result = isAttacking? "Stop Attacking" : "Start Attacking";
         return false;
     }
 }
 
 [HarmonyPatch]
 public class HoardingBugUsePrimarySkillActionPatch {
+    // ReSharper disable InconsistentNaming
     public static MethodBase TargetMethod() {
         var enemyControllerType = HoardingBugEnemyControllerHelper.GetHoardingBugEnemyControllerType();
 
@@ -55,13 +56,12 @@ public class HoardingBugUsePrimarySkillActionPatch {
         if (hoardingBugAI.heldItem != null)
             return true;
 
-        var dataHelper = hoardingBugAI.GetComponent<DataHelper>() ??
-                         hoardingBugAI.gameObject.AddComponent<DataHelper>();
+        var dataHelper = hoardingBugAI.GetComponent<DataHelper>() ?? hoardingBugAI.gameObject.AddComponent<DataHelper>();
 
         if (!dataHelper.HasData("IsAttacking"))
             dataHelper.SetData("IsAttacking", false);
 
-        var isAttacking = (bool)dataHelper.GetData("IsAttacking");
+        var isAttacking = (bool) dataHelper.GetData("IsAttacking");
 
         isAttacking = !isAttacking;
 
@@ -74,6 +74,7 @@ public class HoardingBugUsePrimarySkillActionPatch {
 
 [HarmonyPatch]
 public class HoardingBugControllerDestroyPatch {
+    // ReSharper disable InconsistentNaming
     public static MethodBase TargetMethod() {
         //The destroy method we're looking for is actually not being overriden, so we need to search in the EnemyController class
         var enemyControllerType = EnemyControllerHelper.GetEnemyControllerType();

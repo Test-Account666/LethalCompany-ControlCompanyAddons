@@ -69,8 +69,7 @@ public static class ControlCenterHelper {
         if (_currentControlledEnemyField is not null)
             return true;
 
-        ControlCompanyAddons.Logger.LogError(
-            "Couldn't find ControlCompany 'ControlCenter' currentControlledEnemy field!");
+        ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'ControlCenter' currentControlledEnemy field!");
         return false;
     }
 
@@ -107,7 +106,7 @@ public static class ControlCenterHelper {
         if (!ControlCompanyHelper.FetchControlCompanyAssembly())
             return null;
 
-        return !FetchControlCenterType() ? null : _controlCenterType;
+        return !FetchControlCenterType()? null : _controlCenterType;
     }
 
     public static object? GetCurrentControlledEnemy() {

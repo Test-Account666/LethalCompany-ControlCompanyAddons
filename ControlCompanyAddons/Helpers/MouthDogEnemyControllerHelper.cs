@@ -73,13 +73,13 @@ public static class MouthDogEnemyControllerHelper {
 
         var enemyAI = _mouthDogAIField?.GetValue(enemyController);
 
-        return enemyAI is not MouthDogAI mouthDogAI ? null : mouthDogAI;
+        return enemyAI is not MouthDogAI mouthDogAI? null : mouthDogAI;
     }
 
     public static Type? GetMouthDogEnemyControllerType() {
         if (!ControlCompanyHelper.FetchControlCompanyAssembly())
             return null;
 
-        return !FetchMouthDogEnemyControllerType() ? null : _mouthDogEnemyControllerType;
+        return !FetchMouthDogEnemyControllerType()? null : _mouthDogEnemyControllerType;
     }
 }

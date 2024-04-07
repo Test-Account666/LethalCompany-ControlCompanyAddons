@@ -56,8 +56,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Reference Include="ControlCompany">
-        <HintPath>..\dependencies\ControlCompany.dll</HintPath>
-      </Reference>
+        <Reference Include="ControlCompany">
+            <HintPath>..\dependencies\ControlCompany.dll</HintPath>
+        </Reference>
     </ItemGroup>
 </Project>

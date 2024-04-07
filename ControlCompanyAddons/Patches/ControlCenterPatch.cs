@@ -14,9 +14,11 @@ public class ControlCenterPatch {
         return AccessTools.FirstMethod(controlCenterType, method => method.Name.Contains("SpawnControllableEnemy"));
     }
 
+    // ReSharper disable once InconsistentNaming
     public static void Postfix(object __result) {
         var enemyGameObject = EnemyControllerHelper.GetEnemyGameObject(__result);
 
+        // ReSharper disable once UseNullPropagation
         if (enemyGameObject is null)
             return;
 

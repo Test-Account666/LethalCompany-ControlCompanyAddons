@@ -75,7 +75,7 @@ public static class EnemyControllerHelper {
         if (enemyController is not GameObject)
             return null;
 
-        return (GameObject?)enemyGameObject;
+        return (GameObject?) enemyGameObject;
     }
 
     internal static bool IsAIControlled(object enemyController) {
@@ -100,6 +100,6 @@ public static class EnemyControllerHelper {
         if (!ControlCompanyHelper.FetchControlCompanyAssembly())
             return null;
 
-        return !FetchEnemyControllerType() ? null : _enemyControllerType;
+        return !FetchEnemyControllerType()? null : _enemyControllerType;
     }
 }

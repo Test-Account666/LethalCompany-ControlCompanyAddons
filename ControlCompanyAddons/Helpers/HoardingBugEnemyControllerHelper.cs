@@ -73,13 +73,13 @@ public static class HoardingBugEnemyControllerHelper {
 
         var enemyAI = _hoarderBugAIField?.GetValue(enemyController);
 
-        return enemyAI is not HoarderBugAI hoardingBugAI ? null : hoardingBugAI;
+        return enemyAI is not HoarderBugAI hoardingBugAI? null : hoardingBugAI;
     }
 
     public static Type? GetHoardingBugEnemyControllerType() {
         if (!ControlCompanyHelper.FetchControlCompanyAssembly())
             return null;
 
-        return !FetchHoardingBugEnemyControllerType() ? null : _hoardingBugEnemyControllerType;
+        return !FetchHoardingBugEnemyControllerType()? null : _hoardingBugEnemyControllerType;
     }
 }
