@@ -1,12 +1,15 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using ControlCompanyAddons.Input;
 using HarmonyLib;
 
 namespace ControlCompanyAddons;
 
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency("ControlCompany.ControlCompany")]
+[BepInDependency("com.rune580.LethalCompanyInputUtils")]
 public class ControlCompanyAddons : BaseUnityPlugin {
+    internal static InputKeys inputKeys = null!;
     public static ControlCompanyAddons Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
     internal static Harmony? Harmony { get; set; }
@@ -14,6 +17,10 @@ public class ControlCompanyAddons : BaseUnityPlugin {
     private void Awake() {
         Logger = base.Logger;
         Instance = this;
+
+        inputKeys = new();
+
+        InputHandler.Initialize();
 
         Patch();
 

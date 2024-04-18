@@ -9,6 +9,8 @@ public static class EnemyControllerHelper {
     private static Type? _enemyControllerType;
     private static FieldInfo? _isAIControlledField;
     private static FieldInfo? _enemyGameObjectField;
+    private static MethodInfo? _enableAIControlMethod;
+    private static MethodInfo? _destroyAndCleanUpMethod;
 
     internal static bool FetchEnemyControllerType() {
         if (_enemyControllerType is not null)
@@ -47,19 +49,6 @@ public static class EnemyControllerHelper {
         return false;
     }
 
-    internal static bool FetchEnemyGameObjectField() {
-        if (_enemyGameObjectField is not null)
-            return true;
-
-        _enemyGameObjectField = AccessTools.DeclaredField(_enemyControllerType, "enemyGameObject");
-
-        if (_enemyGameObjectField is not null)
-            return true;
-
-        ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'EnemyController' enemyGameObject field!");
-        return false;
-    }
-
     internal static GameObject? GetEnemyGameObject(object enemyController) {
         if (!ControlCompanyHelper.FetchControlCompanyAssembly())
             return null;
@@ -72,10 +61,7 @@ public static class EnemyControllerHelper {
 
         var enemyGameObject = _enemyGameObjectField?.GetValue(enemyController);
 
-        if (enemyController is not GameObject)
-            return null;
-
-        return (GameObject?) enemyGameObject;
+        return enemyGameObject as GameObject;
     }
 
     internal static bool IsAIControlled(object enemyController) {
@@ -101,5 +87,87 @@ public static class EnemyControllerHelper {
             return null;
 
         return !FetchEnemyControllerType()? null : _enemyControllerType;
+    }
+
+    internal static bool FetchEnemyGameObjectField() {
+        if (_enemyGameObjectField is not null)
+            return true;
+
+        if (!FetchEnemyControllerType())
+            return false;
+
+        var enemyControllerType = GetEnemyControllerType();
+
+        if (enemyControllerType is null)
+            return false;
+
+        _enemyGameObjectField = AccessTools.DeclaredField(enemyControllerType, "enemyGameObject");
+
+        if (_enemyGameObjectField is not null)
+            return true;
+
+        ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'CustomPlayerController' enemyGameObject field!");
+        return false;
+    }
+
+    internal static bool FetchEnableAIControlMethod() {
+        if (_enableAIControlMethod is not null)
+            return true;
+
+        if (!FetchEnemyControllerType())
+            return false;
+
+        var enemyControllerType = GetEnemyControllerType();
+
+        if (enemyControllerType is null)
+            return false;
+
+        _enableAIControlMethod = AccessTools.DeclaredMethod(enemyControllerType, "EnableAIControl", [
+            typeof(bool),
+        ]);
+
+        if (_enableAIControlMethod is not null)
+            return true;
+
+        ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'CustomPlayerController' EnableAIControl method!");
+        return false;
+    }
+
+    public static void EnableAIControl(object enemyController, bool enable) {
+        if (!FetchEnableAIControlMethod())
+            return;
+
+        _enableAIControlMethod?.Invoke(enemyController, [
+            enable,
+        ]);
+    }
+
+    internal static bool FetchDestroyAndCleanUpMethod() {
+        if (_destroyAndCleanUpMethod is not null)
+            return true;
+
+        if (!FetchEnemyControllerType())
+            return false;
+
+        var enemyControllerType = GetEnemyControllerType();
+
+        if (enemyControllerType is null)
+            return false;
+
+        _destroyAndCleanUpMethod = AccessTools.DeclaredMethod(enemyControllerType, "DestroyAndCleanUp");
+
+        if (_destroyAndCleanUpMethod is not null)
+            return true;
+
+        ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'EnemyController' DestroyAndCleanUp method!");
+        return false;
+    }
+
+    public static void DestroyAndCleanUp(object enemyController) {
+        if (!FetchDestroyAndCleanUpMethod())
+            return;
+
+        _destroyAndCleanUpMethod?.Invoke(enemyController, [
+        ]);
     }
 }

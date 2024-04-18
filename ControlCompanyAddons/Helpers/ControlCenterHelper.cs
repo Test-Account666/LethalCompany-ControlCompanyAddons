@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using HarmonyLib;
+using UnityEngine;
 
 namespace ControlCompanyAddons.Helpers;
 
@@ -9,6 +11,9 @@ public static class ControlCenterHelper {
     private static FieldInfo? _controlCenterInstanceField;
     private static FieldInfo? _controlCenterCurrentModeField;
     private static FieldInfo? _currentControlledEnemyField;
+    private static FieldInfo? _ghostControllerField;
+    private static FieldInfo? _isGhostIndoorsField;
+    private static MethodInfo? _enableGhostMethod;
 
     internal static bool FetchControlCenterType() {
         if (_controlCenterType is not null)
@@ -88,18 +93,57 @@ public static class ControlCenterHelper {
         return controlCenterInstance;
     }
 
-    public static bool IsEnemyMode() {
+    public static void SetCurrentControlMode(ControlMode controlMode) {
         var controlCenterInstance = GetControlCenterInstance();
 
         if (controlCenterInstance is null)
-            return false;
+            return;
 
         if (!FetchControlCenterCurrentModeField())
-            return false;
+            return;
+
+        var enumType = _controlCenterType?.GetNestedType("Mode");
+
+        if (enumType == null) {
+            ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'ControlCenter.Mode' enum!");
+            return;
+        }
+
+        var enumValues = Enum.GetValues(enumType);
+
+        var enumToSet = enumValues.Cast<object?>()
+                                  .FirstOrDefault(value => value is not null && value.ToString().Equals(controlMode.ToString()));
+
+        if (enumToSet is null) {
+            ControlCompanyAddons.Logger.LogError("Couldn't find ControlMode '" + controlMode + "' in ControlCompany!");
+            return;
+        }
+
+        _controlCenterCurrentModeField?.SetValue(GetControlCenterInstance(), enumToSet);
+    }
+
+    public static ControlMode GetCurrentControlMode() {
+        var controlCenterInstance = GetControlCenterInstance();
+
+        if (controlCenterInstance is null)
+            return ControlMode.UNKNOWN;
+
+        if (!FetchControlCenterCurrentModeField())
+            return ControlMode.UNKNOWN;
 
         var currentMode = _controlCenterCurrentModeField?.GetValue(controlCenterInstance);
 
-        return currentMode is 2;
+        if (currentMode is null)
+            return ControlMode.UNKNOWN;
+
+        var controlMode = currentMode.ToString() switch {
+            "HOST" => ControlMode.HOST,
+            "ENEMY" => ControlMode.ENEMY,
+            "GHOST" => ControlMode.GHOST,
+            var _ => ControlMode.UNKNOWN,
+        };
+
+        return controlMode;
     }
 
     public static Type? GetControlCenterType() {
@@ -130,5 +174,109 @@ public static class ControlCenterHelper {
         var currentControlledEnemy = _currentControlledEnemyField?.GetValue(controlCenterInstance);
 
         return currentControlledEnemy;
+    }
+
+    internal static bool FetchEnableGhostMethod() {
+        if (_enableGhostMethod is not null)
+            return true;
+
+        if (!FetchControlCenterType())
+            return false;
+
+        _enableGhostMethod = AccessTools.DeclaredMethod(_controlCenterType, "EnableGhost", [
+            typeof(bool), typeof(Vector3),
+        ]);
+
+        if (_controlCenterType is not null)
+            return true;
+
+        ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'ControlCenter' EnableGhost method!");
+        return false;
+    }
+
+    public static void EnableGhost(bool enable, Vector3 position) {
+        var controlCenterInstance = GetControlCenterInstance();
+
+        if (controlCenterInstance is null)
+            return;
+
+        if (!FetchEnableGhostMethod())
+            return;
+
+        _enableGhostMethod?.Invoke(controlCenterInstance, [
+            enable, position,
+        ]);
+    }
+
+    internal static bool FetchGhostControllerField() {
+        if (_ghostControllerField is not null)
+            return true;
+
+        if (!FetchControlCenterType())
+            return false;
+
+        var controlCenterType = GetControlCenterType();
+
+        _ghostControllerField = AccessTools.DeclaredField(controlCenterType, "ghostController");
+
+        if (_ghostControllerField is not null)
+            return true;
+
+        ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'ControlCenter' ghostController field!");
+        return false;
+    }
+
+    public static object? GetGhostController() {
+        if (!FetchControlCenterInstanceField())
+            return null;
+
+        var controlCenterInstance = GetControlCenterInstance();
+
+        if (controlCenterInstance is null)
+            return null;
+
+        if (!FetchGhostControllerField())
+            return null;
+
+        var ghostController = _ghostControllerField?.GetValue(controlCenterInstance);
+        return ghostController;
+    }
+
+    internal static bool FetchIsGhostIndoorsField() {
+        if (!FetchControlCenterType())
+            return false;
+
+        var controlCenterType = GetControlCenterType();
+
+        if (controlCenterType is null)
+            return false;
+
+        _isGhostIndoorsField = AccessTools.DeclaredField(controlCenterType, "isGhostIndoors");
+
+        if (_isGhostIndoorsField is not null)
+            return true;
+
+        ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'ControlCenter' isGhostIndoors field!");
+        return false;
+    }
+
+    public static bool IsGhostIndoors() {
+        if (!FetchControlCenterInstanceField())
+            return false;
+
+        if (!FetchIsGhostIndoorsField())
+            return false;
+
+        var controlCenterInstance = GetControlCenterInstance();
+
+        if (controlCenterInstance is null)
+            return false;
+
+        var isGhostIndoors = _isGhostIndoorsField?.GetValue(controlCenterInstance);
+
+        if (isGhostIndoors is null)
+            return false;
+
+        return (bool) isGhostIndoors;
     }
 }

@@ -7,7 +7,7 @@
         <Description>Additions that ControlCompany won't add, or hasn't added, yet</Description>
         <Source>https://github.com/TheBlackEntity/LethalCompany-ControlCompanyAddons</Source>
         <!-- Change to whatever version you're currently on. -->
-        <Version>1.1.0</Version>
+        <Version>1.2.0</Version>
     </PropertyGroup>
 
     <!-- Project Properties -->
@@ -15,7 +15,7 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <RootNamespace>ControlCompanyAddons</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <LangVersion>latest</LangVersion>
+        <LangVersion>preview</LangVersion>
     </PropertyGroup>
 
     <!-- Enable Nullable for better IDE null-checking -->
@@ -48,6 +48,7 @@
         <PackageReference Include="BepInEx.Core" Version="5.*" PrivateAssets="all"/>
         <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" PrivateAssets="all"/>
         <PackageReference Include="LethalCompany.GameLibs.Steam" Version="*-*" PrivateAssets="all"/>
+        <PackageReference Include="Rune580.Mods.LethalCompany.InputUtils" Version="0.7.4"/>
         <PackageReference Include="UnityEngine.Modules" Version="2022.3.9" IncludeAssets="compile" PrivateAssets="all"/>
     </ItemGroup>
 
@@ -59,5 +60,17 @@
         <Reference Include="ControlCompany">
             <HintPath>..\dependencies\ControlCompany.dll</HintPath>
         </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="UnityStereoSupport.glslinc"/>
+        <None Remove="UnitySprites.cginc"/>
+        <None Remove="SpeedTreeWind.cginc"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Helpers\ControlMode.cs">
+            <DependentUpon>ControlCenterHelper.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
 </Project>

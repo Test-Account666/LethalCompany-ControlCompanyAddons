@@ -26,7 +26,7 @@ public static class HoarderBugAIPatch {
         if (enemyAI is not HoarderBugAI)
             return;
 
-        if (!ControlCenterHelper.IsEnemyMode())
+        if (ControlCenterHelper.GetCurrentControlMode() != ControlMode.ENEMY)
             return;
 
         var currentControlledEnemy = ControlCenterHelper.GetCurrentControlledEnemy();
