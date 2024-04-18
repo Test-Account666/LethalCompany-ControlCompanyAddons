@@ -1,9 +1,13 @@
 # ControlCompany Additions Mod
 
+## 1.2.1
+
+\* Fixed changelog...<br>
+
 ## 1.2.0
 
-\+ Added "Release Control" button, which is like the "Exit" button, but it doesn't delete the controlled enemy
-\# Internal Code changes, including future-proofing
+\+ Added "Release Control" button, which is like the "Exit" button, but it doesn't delete the controlled enemy<br>
+\# Internal Code changes, including future-proofing<br>
 
 ## 1.1.0
 
