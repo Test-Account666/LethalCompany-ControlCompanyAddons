@@ -1,5 +1,10 @@
 # ControlCompany Additions Mod
 
+## 1.2.2
+
+\* Fixed RadMech duplicating / despawning only after 3 seconds<br>
+(Please note that this isn't an optimal fix. Actually, it's technically no fix at all. Please notify me of issues)<br>
+
 ## 1.2.1
 
 \* Fixed changelog...<br>
