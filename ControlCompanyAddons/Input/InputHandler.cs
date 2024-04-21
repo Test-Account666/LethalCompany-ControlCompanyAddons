@@ -27,15 +27,16 @@ internal static class InputHandler {
 
         var position = currentControlledEnemy.transform.position;
 
-        var rotation = currentControlledEnemy.transform.rotation;
-
-        var copyObject = Object.Instantiate(currentControlledEnemy, position, rotation);
-
-        copyObject.GetComponent<NetworkObject>().Spawn(true);
-
         ControlCenterHelper.EnableGhost(true, position);
         GhostControllerHelper.EnableLight(ControlCenterHelper.IsGhostIndoors());
-        EnemyControllerHelper.DestroyAndCleanUp(enemyController);
+
+        EnemyControllerHelper.EnableAIControl(enemyController, true);
+
+        var enemyControllerBehaviour = enemyController as MonoBehaviour;
+
+        if (enemyControllerBehaviour != null)
+            Object.Destroy(enemyControllerBehaviour.gameObject);
+
         ControlCenterHelper.SetCurrentControlMode(ControlMode.GHOST);
     }
 }
