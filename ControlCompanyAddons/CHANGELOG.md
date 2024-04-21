@@ -1,5 +1,10 @@
 # ControlCompany Additions Mod
 
+## 1.2.3
+
+\* Fixed enemy release starting enemy spawn animation<br>
+\- Removed the RadMech Fix, as it should now be unnecessary<br>
+
 ## 1.2.2
 
 \* Fixed RadMech duplicating / despawning only after 3 seconds<br>
