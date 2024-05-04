@@ -17,15 +17,21 @@ public static class MouthDogEnemyControllerHelper {
         if (controlCompanyAssembly is null)
             return false;
 
-        foreach (var type in AccessTools.GetTypesFromAssembly(controlCompanyAssembly)) {
-            if (type?.Namespace?.Contains("ControlCompany.Core.Enemy") is not true)
-                continue;
+        var tries = 0;
 
-            if (type?.Name?.Contains("MouthDogEnemyController") is not true)
-                continue;
+        while (tries < 3) {
+            foreach (var type in AccessTools.GetTypesFromAssembly(controlCompanyAssembly)) {
+                if (type?.Namespace?.Contains("ControlCompany.Core.Enemy") is not true)
+                    continue;
 
-            _mouthDogEnemyControllerType = type;
-            return true;
+                if (type?.Name?.Contains("MouthDogEnemyController") is not true)
+                    continue;
+
+                _mouthDogEnemyControllerType = type;
+                return true;
+            }
+
+            tries += 1;
         }
 
         ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'MouthDogEnemyController' type!");
