@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 
 namespace ControlCompanyAddons.Helpers;
@@ -11,7 +12,10 @@ public static class ControlCompanyHelper {
             return true;
 
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
-            if (assembly?.FullName?.ToLower().Contains("controlcompany") is not true)
+            if (!assembly?.FullName?.ToLower().Contains("controlcompany") ?? true)
+                continue;
+
+            if (assembly?.FullName?.ToLower().Contains("controlcompanyfilter") ?? true)
                 continue;
 
             _controlCompanyAssembly = assembly;
