@@ -1,5 +1,9 @@
 # ControlCompany Additions Mod
 
+## 1.2.4
+
+\* Fixed mod trying to use the wrong assembly in some situations
+
 ## 1.2.3
 
 \* Fixed enemy release starting enemy spawn animation<br>
