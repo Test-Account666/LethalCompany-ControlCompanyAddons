@@ -23,20 +23,9 @@ public static class UIManagerPatch {
         if (controlCompanyAssembly is null)
             throw new NullReferenceException("ControlCompany Assembly could not be found!");
 
-        var tries = 0;
-
-        Type? uiManagerType = null;
-
-        while (tries < 3) {
-            uiManagerType = AccessTools.GetTypesFromAssembly(controlCompanyAssembly)
+        var uiManagerType = AccessTools.GetTypesFromAssembly(controlCompanyAssembly)
                                        .Where(type => type?.Namespace?.Contains("ControlCompany.Core.UI") is true)
                                        .FirstOrDefault(type => type?.Name?.Contains("UIManager") is true);
-
-            if (uiManagerType is not null)
-                break;
-
-            tries += 1;
-        }
 
         if (uiManagerType is null)
             throw new NullReferenceException("Could not find ControlCompany UIManager type!");

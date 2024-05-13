@@ -20,22 +20,16 @@ public static class EnemyControllerHelper {
 
         if (controlCompanyAssembly is null)
             return false;
-        
-        var tries = 0;
 
-        while (tries < 3) {
-            foreach (var type in AccessTools.GetTypesFromAssembly(controlCompanyAssembly)) {
-                if (type?.Namespace?.Contains("ControlCompany.Core") is not true)
-                    continue;
+        foreach (var type in AccessTools.GetTypesFromAssembly(controlCompanyAssembly)) {
+            if (type?.Namespace?.Contains("ControlCompany.Core") is not true)
+                continue;
 
-                if (type?.Name?.Contains("EnemyController") is not true)
-                    continue;
+            if (type?.Name?.Contains("EnemyController") is not true)
+                continue;
 
-                _enemyControllerType = type;
-                return true;
-            }
-
-            tries += 1;
+            _enemyControllerType = type;
+            return true;
         }
 
         ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'EnemyController' type!");

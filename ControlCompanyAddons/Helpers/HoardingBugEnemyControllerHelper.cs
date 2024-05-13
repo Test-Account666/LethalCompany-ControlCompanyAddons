@@ -17,21 +17,15 @@ public static class HoardingBugEnemyControllerHelper {
         if (controlCompanyAssembly is null)
             return false;
 
-        var tries = 0;
+        foreach (var type in AccessTools.GetTypesFromAssembly(controlCompanyAssembly)) {
+            if (type?.Namespace?.Contains("ControlCompany.Core.Enemy") is not true)
+                continue;
 
-        while (tries < 3) {
-            foreach (var type in AccessTools.GetTypesFromAssembly(controlCompanyAssembly)) {
-                if (type?.Namespace?.Contains("ControlCompany.Core.Enemy") is not true)
-                    continue;
+            if (type?.Name?.Contains("HoardingBugEnemyController") is not true)
+                continue;
 
-                if (type?.Name?.Contains("HoardingBugEnemyController") is not true)
-                    continue;
-
-                _hoardingBugEnemyControllerType = type;
-                return true;
-            }
-
-            tries += 1;
+            _hoardingBugEnemyControllerType = type;
+            return true;
         }
 
         ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'HoardingBugEnemyController' type!");
