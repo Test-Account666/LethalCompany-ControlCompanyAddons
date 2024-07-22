@@ -19,15 +19,12 @@ public static class HoardingBugAdditions {
         }
 
         foreach (var playerControllerB in RoundManager.Instance.playersManager.allPlayerScripts) {
-            if (!playerControllerB.isPlayerControlled)
-                continue;
+            if (!playerControllerB.isPlayerControlled) continue;
 
-            if (playerControllerB.isPlayerDead)
-                continue;
+            if (playerControllerB.isPlayerDead) continue;
 
             foreach (var itemSlot in playerControllerB.ItemSlots) {
-                if (itemSlot is null)
-                    continue;
+                if (itemSlot is null) continue;
 
                 var fakeStolenItem = new HoarderBugItem(itemSlot, HoarderBugItemStatus.Stolen, new(2000, 2000, 2000));
 

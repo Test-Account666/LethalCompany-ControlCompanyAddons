@@ -94,16 +94,13 @@ public class MouthDogGetSecondarySkillNamePatch {
     public static bool Prefix(object __instance, ref string __result) {
         var mouthDogAI = MouthDogEnemyControllerHelper.GetMouthDogAI(__instance);
 
-        if (mouthDogAI is null)
-            return true;
+        if (mouthDogAI is null) return true;
 
         var dataHelper = mouthDogAI.GetComponent<DataHelper>() ?? mouthDogAI.gameObject.AddComponent<DataHelper>();
 
-        if (!dataHelper.HasData("HasScreamed"))
-            dataHelper.SetData("HasScreamed", false);
+        if (!dataHelper.HasData("HasScreamed")) dataHelper.SetData("HasScreamed", false);
 
-        if (!dataHelper.HasData("WasAngered"))
-            dataHelper.SetData("WasAngered", false);
+        if (!dataHelper.HasData("WasAngered")) dataHelper.SetData("WasAngered", false);
 
         var hasScreamed = (bool) dataHelper.GetData("HasScreamed");
 
@@ -123,21 +120,17 @@ public class MouthDogUseSecondarySkillActionPatch {
     }
 
     public static bool Prefix(object __instance) {
-        if (EnemyControllerHelper.IsAIControlled(__instance))
-            return true;
+        if (EnemyControllerHelper.IsAIControlled(__instance)) return true;
 
         var mouthDogAI = MouthDogEnemyControllerHelper.GetMouthDogAI(__instance);
 
-        if (mouthDogAI is null)
-            return true;
+        if (mouthDogAI is null) return true;
 
         var dataHelper = mouthDogAI.GetComponent<DataHelper>() ?? mouthDogAI.gameObject.AddComponent<DataHelper>();
 
-        if (!dataHelper.HasData("HasScreamed"))
-            dataHelper.SetData("HasScreamed", false);
+        if (!dataHelper.HasData("HasScreamed")) dataHelper.SetData("HasScreamed", false);
 
-        if (!dataHelper.HasData("WasAngered"))
-            dataHelper.SetData("WasAngered", false);
+        if (!dataHelper.HasData("WasAngered")) dataHelper.SetData("WasAngered", false);
 
         var hasScreamed = (bool) dataHelper.GetData("HasScreamed");
 
@@ -145,8 +138,7 @@ public class MouthDogUseSecondarySkillActionPatch {
 
         hasScreamed = !hasScreamed;
 
-        if (!hasScreamed)
-            wasAngered = true;
+        if (!hasScreamed) wasAngered = true;
 
         MouthDogAdditions.HandleScreamOrLunge(mouthDogAI, hasScreamed);
 

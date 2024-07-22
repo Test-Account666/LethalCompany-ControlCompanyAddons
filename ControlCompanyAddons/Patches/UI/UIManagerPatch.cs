@@ -20,15 +20,13 @@ public static class UIManagerPatch {
     public static MethodBase TargetMethod() {
         var controlCompanyAssembly = ControlCompanyHelper.GetControlCompanyAssembly();
 
-        if (controlCompanyAssembly is null)
-            throw new NullReferenceException("ControlCompany Assembly could not be found!");
+        if (controlCompanyAssembly is null) throw new NullReferenceException("ControlCompany Assembly could not be found!");
 
         var uiManagerType = AccessTools.GetTypesFromAssembly(controlCompanyAssembly)
                                        .Where(type => type?.Namespace?.Contains("ControlCompany.Core.UI") is true)
                                        .FirstOrDefault(type => type?.Name?.Contains("UIManager") is true);
 
-        if (uiManagerType is null)
-            throw new NullReferenceException("Could not find ControlCompany UIManager type!");
+        if (uiManagerType is null) throw new NullReferenceException("Could not find ControlCompany UIManager type!");
 
         var renderEnemyControlsMethod = AccessTools.DeclaredMethod(uiManagerType, "RenderEnemyControls");
 
@@ -83,8 +81,7 @@ public static class UIManagerPatch {
                 patternIndex = 0;
 
             // If we're not finished matching, let's go back to the start of the loop :)
-            if (patternIndex < pattern.Count)
-                continue;
+            if (patternIndex < pattern.Count) continue;
 
             // Yay, we fully matched our pattern :>
             found = true;
@@ -138,8 +135,7 @@ public static class UIManagerPatch {
     private static string GetInputKey() {
         var currentTime = UnixTime.GetCurrentTime();
 
-        if (currentTime < _nextUpdate)
-            return _keyToPress;
+        if (currentTime < _nextUpdate) return _keyToPress;
 
         var keyToPress = ControlCompanyAddons.inputKeys.ReleaseControlKey.bindings[0].ToString().ToUpper();
         keyToPress = _DirtyKeyRegex1.Replace(keyToPress, "");

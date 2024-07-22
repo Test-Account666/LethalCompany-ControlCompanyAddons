@@ -23,35 +23,27 @@ public static class HoarderBugAIPatch {
         SwitchToBehaviourStateHandler(__instance, ref stateIndex);
 
     private static void SwitchToBehaviourStateHandler(Component enemyAI, ref int stateIndex) {
-        if (enemyAI is not HoarderBugAI)
-            return;
+        if (enemyAI is not HoarderBugAI) return;
 
-        if (ControlCenterHelper.GetCurrentControlMode() != ControlMode.ENEMY)
-            return;
+        if (ControlCenterHelper.GetCurrentControlMode() != ControlMode.ENEMY) return;
 
         var currentControlledEnemy = ControlCenterHelper.GetCurrentControlledEnemy();
 
-        if (currentControlledEnemy is null)
-            return;
+        if (currentControlledEnemy is null) return;
 
-        if (EnemyControllerHelper.IsAIControlled(currentControlledEnemy))
-            return;
+        if (EnemyControllerHelper.IsAIControlled(currentControlledEnemy)) return;
 
         var dataHelper = enemyAI.GetComponent<DataHelper>();
 
-        if (dataHelper is null)
-            return;
+        if (dataHelper is null) return;
 
-        if (!dataHelper.HasData("IsAttacking"))
-            return;
+        if (!dataHelper.HasData("IsAttacking")) return;
 
         var isAttacking = (bool) dataHelper.GetData("IsAttacking");
 
-        if (isAttacking)
-            return;
+        if (isAttacking) return;
 
-        if (stateIndex != 2)
-            return;
+        if (stateIndex != 2) return;
 
         stateIndex = 0;
     }

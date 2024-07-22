@@ -19,8 +19,7 @@ public class ControlCenterPatch {
         var enemyGameObject = EnemyControllerHelper.GetEnemyGameObject(__result);
 
         // ReSharper disable once UseNullPropagation
-        if (enemyGameObject is null)
-            return;
+        if (enemyGameObject is null) return;
 
         enemyGameObject.AddComponent<DataHelper>();
     }

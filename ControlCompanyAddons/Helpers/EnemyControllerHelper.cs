@@ -13,20 +13,16 @@ public static class EnemyControllerHelper {
     private static MethodInfo? _destroyAndCleanUpMethod;
 
     internal static bool FetchEnemyControllerType() {
-        if (_enemyControllerType is not null)
-            return true;
+        if (_enemyControllerType is not null) return true;
 
         var controlCompanyAssembly = ControlCompanyHelper.GetControlCompanyAssembly();
 
-        if (controlCompanyAssembly is null)
-            return false;
+        if (controlCompanyAssembly is null) return false;
 
         foreach (var type in AccessTools.GetTypesFromAssembly(controlCompanyAssembly)) {
-            if (type?.Namespace?.Contains("ControlCompany.Core") is not true)
-                continue;
+            if (type?.Namespace?.Contains("ControlCompany.Core") is not true) continue;
 
-            if (type?.Name?.Contains("EnemyController") is not true)
-                continue;
+            if (type?.Name?.Contains("EnemyController") is not true) continue;
 
             _enemyControllerType = type;
             return true;
@@ -37,27 +33,22 @@ public static class EnemyControllerHelper {
     }
 
     internal static bool FetchIsAIControlledField() {
-        if (_isAIControlledField is not null)
-            return true;
+        if (_isAIControlledField is not null) return true;
 
         _isAIControlledField = AccessTools.DeclaredField(_enemyControllerType, "isAIControlled");
 
-        if (_isAIControlledField is not null)
-            return true;
+        if (_isAIControlledField is not null) return true;
 
         ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'EnemyController' isAIControlled field!");
         return false;
     }
 
     internal static GameObject? GetEnemyGameObject(object enemyController) {
-        if (!ControlCompanyHelper.FetchControlCompanyAssembly())
-            return null;
+        if (!ControlCompanyHelper.FetchControlCompanyAssembly()) return null;
 
-        if (!FetchEnemyControllerType())
-            return null;
+        if (!FetchEnemyControllerType()) return null;
 
-        if (!FetchEnemyGameObjectField())
-            return null;
+        if (!FetchEnemyGameObjectField()) return null;
 
         var enemyGameObject = _enemyGameObjectField?.GetValue(enemyController);
 
@@ -65,77 +56,63 @@ public static class EnemyControllerHelper {
     }
 
     internal static bool IsAIControlled(object enemyController) {
-        if (!ControlCompanyHelper.FetchControlCompanyAssembly())
-            return true;
+        if (!ControlCompanyHelper.FetchControlCompanyAssembly()) return true;
 
-        if (!FetchEnemyControllerType())
-            return true;
+        if (!FetchEnemyControllerType()) return true;
 
-        if (!FetchIsAIControlledField())
-            return true;
+        if (!FetchIsAIControlledField()) return true;
 
         var isAIControlled = _isAIControlledField?.GetValue(enemyController);
 
-        if (isAIControlled is not bool)
-            return true;
+        if (isAIControlled is not bool) return true;
 
         return isAIControlled is true;
     }
 
     public static Type? GetEnemyControllerType() {
-        if (!ControlCompanyHelper.FetchControlCompanyAssembly())
-            return null;
+        if (!ControlCompanyHelper.FetchControlCompanyAssembly()) return null;
 
         return !FetchEnemyControllerType()? null : _enemyControllerType;
     }
 
     internal static bool FetchEnemyGameObjectField() {
-        if (_enemyGameObjectField is not null)
-            return true;
+        if (_enemyGameObjectField is not null) return true;
 
-        if (!FetchEnemyControllerType())
-            return false;
+        if (!FetchEnemyControllerType()) return false;
 
         var enemyControllerType = GetEnemyControllerType();
 
-        if (enemyControllerType is null)
-            return false;
+        if (enemyControllerType is null) return false;
 
         _enemyGameObjectField = AccessTools.DeclaredField(enemyControllerType, "enemyGameObject");
 
-        if (_enemyGameObjectField is not null)
-            return true;
+        if (_enemyGameObjectField is not null) return true;
 
         ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'CustomPlayerController' enemyGameObject field!");
         return false;
     }
 
     internal static bool FetchEnableAIControlMethod() {
-        if (_enableAIControlMethod is not null)
-            return true;
+        if (_enableAIControlMethod is not null) return true;
 
-        if (!FetchEnemyControllerType())
-            return false;
+        if (!FetchEnemyControllerType()) return false;
 
         var enemyControllerType = GetEnemyControllerType();
 
-        if (enemyControllerType is null)
-            return false;
+        if (enemyControllerType is null) return false;
 
         _enableAIControlMethod = AccessTools.DeclaredMethod(enemyControllerType, "EnableAIControl", [
             typeof(bool),
         ]);
 
-        if (_enableAIControlMethod is not null)
-            return true;
+        if (_enableAIControlMethod is not null) return true;
 
         ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'CustomPlayerController' EnableAIControl method!");
         return false;
     }
 
     public static void EnableAIControl(object enemyController, bool enable) {
-        if (!FetchEnableAIControlMethod())
-            return;
+        if (!FetchEnableAIControlMethod()) return;
 
         _enableAIControlMethod?.Invoke(enemyController, [
             enable,
@@ -143,29 +120,24 @@ public static class EnemyControllerHelper {
     }
 
     internal static bool FetchDestroyAndCleanUpMethod() {
-        if (_destroyAndCleanUpMethod is not null)
-            return true;
+        if (_destroyAndCleanUpMethod is not null) return true;
 
-        if (!FetchEnemyControllerType())
-            return false;
+        if (!FetchEnemyControllerType()) return false;
 
         var enemyControllerType = GetEnemyControllerType();
 
-        if (enemyControllerType is null)
-            return false;
+        if (enemyControllerType is null) return false;
 
         _destroyAndCleanUpMethod = AccessTools.DeclaredMethod(enemyControllerType, "DestroyAndCleanUp");
 
-        if (_destroyAndCleanUpMethod is not null)
-            return true;
+        if (_destroyAndCleanUpMethod is not null) return true;
 
         ControlCompanyAddons.Logger.LogError("Couldn't find ControlCompany 'EnemyController' DestroyAndCleanUp method!");
         return false;
     }
 
     public static void DestroyAndCleanUp(object enemyController) {
-        if (!FetchDestroyAndCleanUpMethod())
-            return;
+        if (!FetchDestroyAndCleanUpMethod()) return;
 
         _destroyAndCleanUpMethod?.Invoke(enemyController, [
         ]);

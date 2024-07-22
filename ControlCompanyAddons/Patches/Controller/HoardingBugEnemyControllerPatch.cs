@@ -17,16 +17,13 @@ public class HoardingBugGetPrimarySkillNamePatch {
     public static bool Prefix(object __instance, ref string __result) {
         var hoardingBugAI = HoardingBugEnemyControllerHelper.GetHoardingBugAI(__instance);
 
-        if (hoardingBugAI is null)
-            return true;
+        if (hoardingBugAI is null) return true;
 
-        if (hoardingBugAI.heldItem is not null)
-            return true;
+        if (hoardingBugAI.heldItem is not null) return true;
 
         var dataHelper = hoardingBugAI.GetComponent<DataHelper>() ?? hoardingBugAI.gameObject.AddComponent<DataHelper>();
 
-        if (!dataHelper.HasData("IsAttacking"))
-            dataHelper.SetData("IsAttacking", false);
+        if (!dataHelper.HasData("IsAttacking")) dataHelper.SetData("IsAttacking", false);
 
         var isAttacking = (bool) dataHelper.GetData("IsAttacking");
 
@@ -45,16 +42,13 @@ public class HoardingBugUsePrimarySkillActionPatch {
     }
 
     public static bool Prefix(object __instance) {
-        if (EnemyControllerHelper.IsAIControlled(__instance))
-            return true;
+        if (EnemyControllerHelper.IsAIControlled(__instance)) return true;
 
         var hoardingBugAI = HoardingBugEnemyControllerHelper.GetHoardingBugAI(__instance);
 
-        if (hoardingBugAI is null)
-            return true;
+        if (hoardingBugAI is null) return true;
 
-        if (hoardingBugAI.heldItem != null)
-            return true;
+        if (hoardingBugAI.heldItem != null) return true;
 
         var dataHelper = hoardingBugAI.GetComponent<DataHelper>() ?? hoardingBugAI.gameObject.AddComponent<DataHelper>();
 
@@ -83,8 +77,7 @@ public class HoardingBugControllerDestroyPatch {
     }
 
     public static void Prefix(object __instance) {
-        if (!HoardingBugEnemyControllerHelper.IsHoardingBugController(__instance))
-            return;
+        if (!HoardingBugEnemyControllerHelper.IsHoardingBugController(__instance)) return;
 
         HoardingBugAdditions.HandleAttackLogic(false);
     }
