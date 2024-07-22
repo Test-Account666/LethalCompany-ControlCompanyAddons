@@ -1,8 +1,12 @@
 # ControlCompany Additions Mod
 
+## 1.3.0
+
+\+ Added ESP key (Default: Y)<br>
+
 ## 1.2.4
 
-\* Fixed mod trying to use the wrong assembly in some situations
+\* Fixed mod trying to use the wrong assembly in some situations<br>
 
 ## 1.2.3
 
@@ -31,7 +35,7 @@
 ## 1.0.2
 
 \+ Added License<br>
-\# Project is now Open Source
+\# Project is now Open Source<br>
 
 ## 1.0.1
 
