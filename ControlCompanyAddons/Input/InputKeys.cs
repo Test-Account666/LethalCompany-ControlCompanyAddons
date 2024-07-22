@@ -8,5 +8,8 @@ namespace ControlCompanyAddons.Input;
 public class InputKeys : LcInputActions {
     [InputAction(KeyboardControl.Q, Name = "Release Control")]
     public InputAction ReleaseControlKey { get; set; }
+
+    [InputAction(KeyboardControl.Y, Name = "Toggle ESP")]
+    public InputAction ToggleEspKey { get; set; }
 }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
