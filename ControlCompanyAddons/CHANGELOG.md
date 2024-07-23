@@ -1,5 +1,10 @@
 # ControlCompany Additions Mod
 
+## 2.0.0
+
+\* Fixed Player ESP<br>
+\# Switched from reflective access to direct access<br>
+
 ## 1.3.0
 
 \+ Added ESP key (Default: Y)<br>
