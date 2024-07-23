@@ -67,10 +67,4 @@
         <None Remove="UnitySprites.cginc"/>
         <None Remove="SpeedTreeWind.cginc"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="Helpers\ControlMode.cs">
-            <DependentUpon>ControlCenterHelper.cs</DependentUpon>
-        </Compile>
-    </ItemGroup>
 </Project>

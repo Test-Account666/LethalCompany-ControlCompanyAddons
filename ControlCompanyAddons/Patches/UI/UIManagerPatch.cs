@@ -10,33 +10,16 @@ using HarmonyLib;
 
 namespace ControlCompanyAddons.Patches.UI;
 
-[HarmonyPatch]
+[HarmonyPatch(typeof(UIManager))]
 public static class UIManagerPatch {
     private static readonly Regex _DirtyKeyRegex1 = new(".*<.*>/", RegexOptions.Compiled);
     private static readonly Regex _DirtyKeyRegex2 = new(@"\[.*\]", RegexOptions.Compiled);
     private static string _keyToPress = "";
     private static long _nextUpdate = 0;
 
-    public static MethodBase TargetMethod() {
-        var controlCompanyAssembly = ControlCompanyHelper.GetControlCompanyAssembly();
-
-        if (controlCompanyAssembly is null) throw new NullReferenceException("ControlCompany Assembly could not be found!");
-
-        var uiManagerType = AccessTools.GetTypesFromAssembly(controlCompanyAssembly)
-                                       .Where(type => type?.Namespace?.Contains("ControlCompany.Core.UI") is true)
-                                       .FirstOrDefault(type => type?.Name?.Contains("UIManager") is true);
-
-        if (uiManagerType is null) throw new NullReferenceException("Could not find ControlCompany UIManager type!");
-
-        var renderEnemyControlsMethod = AccessTools.DeclaredMethod(uiManagerType, "RenderEnemyControls");
-
-        if (renderEnemyControlsMethod is null)
-            throw new NullReferenceException("ControlCompany 'UIManager' RenderEnemyControls method could not be found!");
-
-        return renderEnemyControlsMethod;
-    }
-
-    private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+    [HarmonyPatch(nameof(UIManager.RenderEnemyControls))]
+    [HarmonyTranspiler]
+    private static IEnumerable<CodeInstruction> InsertEnemyControls(IEnumerable<CodeInstruction> instructions) {
         List<CodeInstruction> codes = [
             ..instructions,
         ];

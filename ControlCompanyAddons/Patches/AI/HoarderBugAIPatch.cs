@@ -1,3 +1,4 @@
+using ControlCompany.Core;
 using ControlCompanyAddons.Helpers;
 using HarmonyLib;
 using UnityEngine;
@@ -7,17 +8,17 @@ namespace ControlCompanyAddons.Patches.AI;
 [HarmonyPatch(typeof(EnemyAI))]
 public static class HoarderBugAIPatch {
     // ReSharper disable InconsistentNaming
-    [HarmonyPatch("SwitchToBehaviourServerRpc")]
+    [HarmonyPatch(nameof(EnemyAI.SwitchToBehaviourServerRpc))]
     [HarmonyPrefix]
     public static void SwitchToBehaviourServerRpcPrefix(EnemyAI __instance, ref int stateIndex) =>
         SwitchToBehaviourStateHandler(__instance, ref stateIndex);
 
-    [HarmonyPatch("SwitchToBehaviourState")]
+    [HarmonyPatch(nameof(EnemyAI.SwitchToBehaviourState))]
     [HarmonyPrefix]
     public static void SwitchToBehaviourStatePrefix(EnemyAI __instance, ref int stateIndex) =>
         SwitchToBehaviourStateHandler(__instance, ref stateIndex);
 
-    [HarmonyPatch("SwitchToBehaviourStateOnLocalClient")]
+    [HarmonyPatch(nameof(EnemyAI.SwitchToBehaviourStateOnLocalClient))]
     [HarmonyPrefix]
     public static void SwitchToBehaviourStateOnLocalClientPrefix(EnemyAI __instance, ref int stateIndex) =>
         SwitchToBehaviourStateHandler(__instance, ref stateIndex);
@@ -25,17 +26,17 @@ public static class HoarderBugAIPatch {
     private static void SwitchToBehaviourStateHandler(Component enemyAI, ref int stateIndex) {
         if (enemyAI is not HoarderBugAI) return;
 
-        if (ControlCenterHelper.GetCurrentControlMode() != ControlMode.ENEMY) return;
+        if (ControlCenter.Instance.currentMode != ControlCenter.Mode.ENEMY) return;
 
-        var currentControlledEnemy = ControlCenterHelper.GetCurrentControlledEnemy();
+        var currentControlledEnemy = ControlCenter.Instance.currentControlledEnemy;
 
-        if (currentControlledEnemy is null) return;
+        if (currentControlledEnemy == null) return;
 
-        if (EnemyControllerHelper.IsAIControlled(currentControlledEnemy)) return;
+        if (currentControlledEnemy.isAIControlled) return;
 
         var dataHelper = enemyAI.GetComponent<DataHelper>();
 
-        if (dataHelper is null) return;
+        if (dataHelper == null) return;
 
         if (!dataHelper.HasData("IsAttacking")) return;
 

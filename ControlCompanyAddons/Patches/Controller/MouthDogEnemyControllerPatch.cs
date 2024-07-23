@@ -1,70 +1,50 @@
-using System.Reflection;
+using ControlCompany.Core;
+using ControlCompany.Core.Enemy;
 using ControlCompanyAddons.Additions;
 using ControlCompanyAddons.Helpers;
 using HarmonyLib;
 
 namespace ControlCompanyAddons.Patches.Controller;
 
-// Primary Skill
-[HarmonyPatch]
-public class MouthDogGetPrimarySkillNamePatch {
+[HarmonyPatch(typeof(EnemyController))]
+public class MouthDogPrimarySkillPatch {
     // ReSharper disable InconsistentNaming
-    public static MethodBase TargetMethod() {
-        var enemyControllerType = EnemyControllerHelper.GetEnemyControllerType();
 
-        return AccessTools.FirstMethod(enemyControllerType, method => method.Name.Contains("GetPrimarySkillName"));
-    }
+    [HarmonyPatch(nameof(EnemyController.GetPrimarySkillName))]
+    [HarmonyPrefix]
+    public static bool SetPrimarySkillName(EnemyController __instance, ref string __result) {
+        if (__instance is not MouthDogEnemyController mouthDogEnemyController) return true;
 
-    public static bool Prefix(object __instance, ref string __result) {
-        if (!MouthDogEnemyControllerHelper.IsMouthDogController(__instance))
-            return true;
+        var mouthDogAI = mouthDogEnemyController.mouthDogAI;
 
-        var mouthDogAI = MouthDogEnemyControllerHelper.GetMouthDogAI(__instance);
+        if (mouthDogAI == null) return true;
 
-        if (mouthDogAI is null)
-            return true;
+        var dataHelper = mouthDogAI.GetComponent<DataHelper>() ?? mouthDogAI.gameObject.AddComponent<DataHelper>();
 
-        var dataHelper = mouthDogAI.GetComponent<DataHelper>() ??
-                         mouthDogAI.gameObject.AddComponent<DataHelper>();
-
-        if (!dataHelper.HasData("WasAngered"))
-            dataHelper.SetData("WasAngered", false);
+        if (!dataHelper.HasData("WasAngered")) dataHelper.SetData("WasAngered", false);
 
         var wasAngered = (bool) dataHelper.GetData("WasAngered");
 
         __result = wasAngered? "Calm Down" : "Investigate";
         return false;
     }
-}
 
-[HarmonyPatch]
-public class MouthDogUsePrimarySkillActionPatch {
-    public static MethodBase TargetMethod() {
-        var enemyControllerType = EnemyControllerHelper.GetEnemyControllerType();
+    [HarmonyPatch(nameof(EnemyController.UsePrimarySkillAction))]
+    [HarmonyPrefix]
+    public static bool UsePrimarySkillAction(EnemyController __instance) {
+        if (__instance is not MouthDogEnemyController mouthDogEnemyController) return true;
 
-        return AccessTools.FirstMethod(enemyControllerType, method => method.Name.Contains("UsePrimarySkillAction"));
-    }
+        if (mouthDogEnemyController.isAIControlled) return true;
 
-    public static bool Prefix(object __instance) {
-        if (!MouthDogEnemyControllerHelper.IsMouthDogController(__instance))
-            return true;
+        var mouthDogAI = mouthDogEnemyController.mouthDogAI;
 
-        if (EnemyControllerHelper.IsAIControlled(__instance))
-            return true;
+        if (mouthDogAI == null) return true;
 
-        var mouthDogAI = MouthDogEnemyControllerHelper.GetMouthDogAI(__instance);
+        var dataHelper = mouthDogAI.GetComponent<DataHelper>() ?? mouthDogAI.gameObject.AddComponent<DataHelper>();
 
-        if (mouthDogAI is null)
-            return true;
+        if (!dataHelper.HasData("HasScreamed")) dataHelper.SetData("HasScreamed", false);
 
-        var dataHelper = mouthDogAI.GetComponent<DataHelper>() ??
-                         mouthDogAI.gameObject.AddComponent<DataHelper>();
-
-        if (!dataHelper.HasData("HasScreamed"))
-            dataHelper.SetData("HasScreamed", false);
-
-        if (!dataHelper.HasData("WasAngered"))
-            dataHelper.SetData("WasAngered", false);
+        if (!dataHelper.HasData("WasAngered")) dataHelper.SetData("WasAngered", false);
 
         var wasAngered = (bool) dataHelper.GetData("WasAngered");
 
@@ -80,21 +60,16 @@ public class MouthDogUsePrimarySkillActionPatch {
     }
 }
 
-// Secondary Skill
-
-[HarmonyPatch]
-public class MouthDogGetSecondarySkillNamePatch {
+[HarmonyPatch(typeof(MouthDogEnemyController))]
+public class MouthDogSecondarySkillPatch {
     // ReSharper disable InconsistentNaming
-    public static MethodBase TargetMethod() {
-        var enemyControllerType = MouthDogEnemyControllerHelper.GetMouthDogEnemyControllerType();
 
-        return AccessTools.FirstMethod(enemyControllerType, method => method.Name.Contains("GetSecondarySkillName"));
-    }
+    [HarmonyPatch(nameof(MouthDogEnemyController.GetSecondarySkillName))]
+    [HarmonyPrefix]
+    public static bool SetSecondarySkillName(MouthDogEnemyController __instance, ref string __result) {
+        var mouthDogAI = __instance.mouthDogAI;
 
-    public static bool Prefix(object __instance, ref string __result) {
-        var mouthDogAI = MouthDogEnemyControllerHelper.GetMouthDogAI(__instance);
-
-        if (mouthDogAI is null) return true;
+        if (mouthDogAI == null) return true;
 
         var dataHelper = mouthDogAI.GetComponent<DataHelper>() ?? mouthDogAI.gameObject.AddComponent<DataHelper>();
 
@@ -109,22 +84,15 @@ public class MouthDogGetSecondarySkillNamePatch {
         __result = hasScreamed? "Lunge" : "Scream";
         return false;
     }
-}
 
-[HarmonyPatch]
-public class MouthDogUseSecondarySkillActionPatch {
-    public static MethodBase TargetMethod() {
-        var enemyControllerType = MouthDogEnemyControllerHelper.GetMouthDogEnemyControllerType();
+    [HarmonyPatch(nameof(MouthDogEnemyController.UseSecondarySkillAction))]
+    [HarmonyPrefix]
+    public static bool UseSecondarySkillAction(MouthDogEnemyController __instance) {
+        if (__instance.isAIControlled) return true;
 
-        return AccessTools.FirstMethod(enemyControllerType, method => method.Name.Contains("UseSecondarySkillAction"));
-    }
+        var mouthDogAI = __instance.mouthDogAI;
 
-    public static bool Prefix(object __instance) {
-        if (EnemyControllerHelper.IsAIControlled(__instance)) return true;
-
-        var mouthDogAI = MouthDogEnemyControllerHelper.GetMouthDogAI(__instance);
-
-        if (mouthDogAI is null) return true;
+        if (mouthDogAI == null) return true;
 
         var dataHelper = mouthDogAI.GetComponent<DataHelper>() ?? mouthDogAI.gameObject.AddComponent<DataHelper>();
 

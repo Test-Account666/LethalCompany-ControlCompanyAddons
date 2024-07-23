@@ -1,25 +1,23 @@
-using System.Reflection;
+using ControlCompany.Core;
+using ControlCompany.Core.Enemy;
 using ControlCompanyAddons.Additions;
 using ControlCompanyAddons.Helpers;
 using HarmonyLib;
 
 namespace ControlCompanyAddons.Patches.Controller;
 
-[HarmonyPatch]
-public class HoardingBugGetPrimarySkillNamePatch {
+[HarmonyPatch(typeof(HoardingBugEnemyController))]
+public class HoardingBugEnemyControllerPatch {
     // ReSharper disable InconsistentNaming
-    public static MethodBase TargetMethod() {
-        var enemyControllerType = HoardingBugEnemyControllerHelper.GetHoardingBugEnemyControllerType();
 
-        return AccessTools.FirstMethod(enemyControllerType, method => method.Name.Contains("GetPrimarySkillName"));
-    }
+    [HarmonyPatch(nameof(HoardingBugEnemyController.GetPrimarySkillName))]
+    [HarmonyPrefix]
+    public static bool SetPrimarySkillName(HoardingBugEnemyController __instance, ref string __result) {
+        var hoardingBugAI = __instance.hoarderBugAI;
 
-    public static bool Prefix(object __instance, ref string __result) {
-        var hoardingBugAI = HoardingBugEnemyControllerHelper.GetHoardingBugAI(__instance);
+        if (hoardingBugAI == null) return true;
 
-        if (hoardingBugAI is null) return true;
-
-        if (hoardingBugAI.heldItem is not null) return true;
+        if (hoardingBugAI.heldItem != null) return true;
 
         var dataHelper = hoardingBugAI.GetComponent<DataHelper>() ?? hoardingBugAI.gameObject.AddComponent<DataHelper>();
 
@@ -30,30 +28,21 @@ public class HoardingBugGetPrimarySkillNamePatch {
         __result = isAttacking? "Stop Attacking" : "Start Attacking";
         return false;
     }
-}
 
-[HarmonyPatch]
-public class HoardingBugUsePrimarySkillActionPatch {
-    // ReSharper disable InconsistentNaming
-    public static MethodBase TargetMethod() {
-        var enemyControllerType = HoardingBugEnemyControllerHelper.GetHoardingBugEnemyControllerType();
+    [HarmonyPatch(nameof(HoardingBugEnemyController.UsePrimarySkillAction))]
+    [HarmonyPrefix]
+    public static bool UsePrimarySkillAction(HoardingBugEnemyController __instance) {
+        if (__instance.isAIControlled) return true;
 
-        return AccessTools.FirstMethod(enemyControllerType, method => method.Name.Contains("UsePrimarySkillAction"));
-    }
+        var hoardingBugAI = __instance.hoarderBugAI;
 
-    public static bool Prefix(object __instance) {
-        if (EnemyControllerHelper.IsAIControlled(__instance)) return true;
-
-        var hoardingBugAI = HoardingBugEnemyControllerHelper.GetHoardingBugAI(__instance);
-
-        if (hoardingBugAI is null) return true;
+        if (hoardingBugAI == null) return true;
 
         if (hoardingBugAI.heldItem != null) return true;
 
         var dataHelper = hoardingBugAI.GetComponent<DataHelper>() ?? hoardingBugAI.gameObject.AddComponent<DataHelper>();
 
-        if (!dataHelper.HasData("IsAttacking"))
-            dataHelper.SetData("IsAttacking", false);
+        if (!dataHelper.HasData("IsAttacking")) dataHelper.SetData("IsAttacking", false);
 
         var isAttacking = (bool) dataHelper.GetData("IsAttacking");
 
@@ -66,18 +55,14 @@ public class HoardingBugUsePrimarySkillActionPatch {
     }
 }
 
-[HarmonyPatch]
+[HarmonyPatch(typeof(EnemyController))]
 public class HoardingBugControllerDestroyPatch {
     // ReSharper disable InconsistentNaming
-    public static MethodBase TargetMethod() {
-        //The destroy method we're looking for is actually not being overriden, so we need to search in the EnemyController class
-        var enemyControllerType = EnemyControllerHelper.GetEnemyControllerType();
 
-        return AccessTools.FirstMethod(enemyControllerType, method => method.Name.Contains("DestroyAndCleanUp"));
-    }
-
-    public static void Prefix(object __instance) {
-        if (!HoardingBugEnemyControllerHelper.IsHoardingBugController(__instance)) return;
+    [HarmonyPatch(nameof(EnemyController.DestroyAndCleanUp))]
+    [HarmonyPrefix]
+    public static void DestroyAndCleanUp(EnemyController __instance) {
+        if (__instance is not HoardingBugEnemyController) return;
 
         HoardingBugAdditions.HandleAttackLogic(false);
     }

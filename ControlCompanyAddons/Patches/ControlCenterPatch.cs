@@ -1,25 +1,18 @@
-using System.Diagnostics;
-using System.Reflection;
+using ControlCompany.Core;
 using ControlCompanyAddons.Helpers;
 using HarmonyLib;
 
 namespace ControlCompanyAddons.Patches;
 
-[HarmonyPatch]
+[HarmonyPatch(typeof(ControlCenter))]
 public class ControlCenterPatch {
-    public static MethodBase TargetMethod() {
-        var controlCenterType = ControlCenterHelper.GetControlCenterType();
-
-        Debug.Assert(controlCenterType != null, nameof(controlCenterType) + " != null");
-        return AccessTools.FirstMethod(controlCenterType, method => method.Name.Contains("SpawnControllableEnemy"));
-    }
-
+    [HarmonyPatch(nameof(ControlCenter.SpawnControllableEnemy))]
+    [HarmonyPostfix]
     // ReSharper disable once InconsistentNaming
-    public static void Postfix(object __result) {
-        var enemyGameObject = EnemyControllerHelper.GetEnemyGameObject(__result);
+    public static void AddDataHelper(EnemyController __result) {
+        var enemyGameObject = __result.enemyGameObject;
 
-        // ReSharper disable once UseNullPropagation
-        if (enemyGameObject is null) return;
+        if (enemyGameObject == null) return;
 
         enemyGameObject.AddComponent<DataHelper>();
     }

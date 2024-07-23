@@ -1,4 +1,4 @@
-using ControlCompanyAddons.Helpers;
+using ControlCompany.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Debug = System.Diagnostics.Debug;
@@ -34,27 +34,29 @@ internal static class InputHandler {
     private static void OnEnemyReleaseKey(InputAction.CallbackContext callbackContext) {
         if (!callbackContext.performed) return;
 
-        if (ControlCenterHelper.GetCurrentControlMode() != ControlMode.ENEMY) return;
+        var controlCenter = ControlCenter.Instance;
 
-        var enemyController = ControlCenterHelper.GetCurrentControlledEnemy();
+        if (controlCenter.currentMode != ControlCenter.Mode.ENEMY) return;
+
+        var enemyController = controlCenter.currentControlledEnemy;
 
         Debug.Assert(enemyController != null, nameof(enemyController) + " != null");
 
-        var currentControlledEnemy = EnemyControllerHelper.GetEnemyGameObject(enemyController);
+        var currentControlledEnemy = enemyController.enemyGameObject;
 
         Debug.Assert(currentControlledEnemy != null, nameof(currentControlledEnemy) + " != null");
 
         var position = currentControlledEnemy.transform.position;
 
-        ControlCenterHelper.EnableGhost(true, position);
-        GhostControllerHelper.EnableLight(ControlCenterHelper.IsGhostIndoors());
+        controlCenter.EnableGhost(true, position);
+        controlCenter.ghostController.EnableLight(controlCenter.isGhostIndoors);
 
-        EnemyControllerHelper.EnableAIControl(enemyController, true);
+        enemyController.EnableAIControl(true);
 
         var enemyControllerBehaviour = enemyController as MonoBehaviour;
 
         if (enemyControllerBehaviour != null) Object.Destroy(enemyControllerBehaviour.gameObject);
 
-        ControlCenterHelper.SetCurrentControlMode(ControlMode.GHOST);
+        controlCenter.currentMode = ControlCenter.Mode.GHOST;
     }
 }
