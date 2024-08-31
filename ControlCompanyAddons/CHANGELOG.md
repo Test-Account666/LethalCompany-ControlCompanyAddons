@@ -1,5 +1,9 @@
 # ControlCompany Additions Mod
 
+## 2.0.1
+
+\* Actually fixed ESP<br>
+
 ## 2.0.0
 
 \* Fixed Player ESP<br>
