@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using GameNetcodeStuff;
 using HarmonyLib;
@@ -11,7 +10,7 @@ namespace ControlCompanyAddons;
 [HarmonyPatch(typeof(PlayerControllerB))]
 public static class PlayerEsp {
     private static AssetBundle _assetBundle = null!;
-    private static Material _material = null!;
+    private static GameObject _playerEspPrefab = null!;
 
     internal static void LoadMaterial() {
         var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -19,7 +18,7 @@ public static class PlayerEsp {
         Debug.Assert(assemblyLocation != null, nameof(assemblyLocation) + " != null");
         _assetBundle = AssetBundle.LoadFromFile(Path.Combine(assemblyLocation, "controlcompanyaddons"));
 
-        _material = _assetBundle.LoadAllAssets<Material>()[0];
+        _playerEspPrefab = _assetBundle.LoadAsset<GameObject>("Assets/LethalCompany/Mods/ControlCompanyAddons/PlayerESP.prefab");
     }
 
     internal static void UnApplyEsp(PlayerControllerB playerControllerB) {
@@ -30,19 +29,11 @@ public static class PlayerEsp {
             return;
         }
 
-        var skinnedMeshRenderers = scavengerModel.GetComponentsInChildren<SkinnedMeshRenderer>();
+        var playerEsp = scavengerModel.Find("PlayerESP(Clone)");
 
-        skinnedMeshRenderers ??= [
-        ];
+        if (playerEsp == null) return;
 
-        foreach (var skinnedMeshRenderer in skinnedMeshRenderers) {
-            var materials = skinnedMeshRenderer.materials.ToList();
-
-            materials.RemoveAt(materials.Count - 1);
-
-            skinnedMeshRenderer.materials = materials.ToArray();
-            skinnedMeshRenderer.sharedMaterials = materials.ToArray();
-        }
+        Object.Destroy(playerEsp.gameObject);
     }
 
     internal static void ApplyEsp(PlayerControllerB playerControllerB) {
@@ -53,20 +44,11 @@ public static class PlayerEsp {
             return;
         }
 
-        var skinnedMeshRenderers = scavengerModel.GetComponentsInChildren<SkinnedMeshRenderer>();
+        UnApplyEsp(playerControllerB);
 
-        skinnedMeshRenderers ??= [
-        ];
+        Object.Instantiate(_playerEspPrefab, scavengerModel, false);
 
-        foreach (var skinnedMeshRenderer in skinnedMeshRenderers) {
-            var materials = skinnedMeshRenderer.materials.ToList();
-
-            if (materials.Contains(_material)) continue;
-
-            materials.Add(_material);
-
-            skinnedMeshRenderer.materials = materials.ToArray();
-            skinnedMeshRenderer.sharedMaterials = materials.ToArray();
-        }
+        //y = 1.5
+        //z = -0.197
     }
 }
